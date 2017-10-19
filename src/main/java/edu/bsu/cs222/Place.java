@@ -1,3 +1,5 @@
+package edu.bsu.cs222;
+
 public class Place {
 
     public static final class Builder {
