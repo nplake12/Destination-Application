@@ -17,27 +17,39 @@ import java.util.List;
 public class PlaceParser {
 
     public List<Place> parse(String location) throws IOException {
-        List<Place> places = new LinkedList<Place>();
-        GeocodeParser locationParser = new GeocodeParser();
-        String coordinates = locationParser.parse(location);
-        String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + coordinates + "&radius=100&type=restaurant&key=AIzaSyAlmnrNiNrVybKz8JbYjOzuxZrGVRI9-Gg";
-        URL placesUrl = new URL(googlePlacesSearch);
-        URLConnection placesConnection = placesUrl.openConnection();
-        InputStream placesInputStream = placesConnection.getInputStream();
+        URL placesUrl = constructPlacesAPICall(location);
+        InputStream placesInputStream = performPlacesAPICall(placesUrl);
         JsonParser parser = new JsonParser();
         Reader placesReader = new InputStreamReader(placesInputStream);
         JsonElement placesRootElement = parser.parse(placesReader);
         JsonObject placesRootObject = placesRootElement.getAsJsonObject();
         JsonArray placesResults = placesRootObject.get("results").getAsJsonArray();
+        return addPlacesToList(placesResults);
+    }
+
+    private URL constructPlacesAPICall(String location) throws IOException{
+        GeocodeParser locationParser = new GeocodeParser();
+        String coordinates = locationParser.parse(location);
+        String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + coordinates + "&radius=500&type=restaurant&key=AIzaSyAlmnrNiNrVybKz8JbYjOzuxZrGVRI9-Gg";
+        return new URL(googlePlacesSearch);
+    }
+
+    private InputStream performPlacesAPICall(URL placesUrl) throws IOException{
+        URLConnection placesConnection = placesUrl.openConnection();
+        return placesConnection.getInputStream();
+    }
+
+    private List<Place> addPlacesToList(JsonArray placesResults){
+        List<Place> placesList = new LinkedList<Place>();
         for (JsonElement place : placesResults) {
             Place googlePlace = new Place.Builder()
-                    .setName(place.getAsJsonObject().get("name").getAsString())
-                    .setRating(place.getAsJsonObject().get("rating").getAsString())
-                    .setAddress(place.getAsJsonObject().get("vicinity").getAsString())
+                    .setName(place.getAsJsonObject().has("name") ? place.getAsJsonObject().get("name").getAsString() : "N/A")
+                    .setRating(place.getAsJsonObject().has("rating") ? place.getAsJsonObject().get("rating").getAsString() : "N/A")
+                    .setAddress(place.getAsJsonObject().has("vicinity") ? place.getAsJsonObject().get("vicinity").getAsString() : "N/A")
                     .build();
-            places.add(googlePlace);
+            placesList.add(googlePlace);
         }
-        return places;
+        return placesList;
     }
 }
 
