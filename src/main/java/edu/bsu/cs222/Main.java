@@ -21,12 +21,12 @@ import java.util.List;
 
 public class Main extends Application {
 
-    private VBox parent = null;
-    private HBox placeSearchArea = null;
-    private TableView<Place> table = null;
-    private TableColumn<Place, String> nameColumn = null;
-    private TableColumn<Place, String> addressColumn = null;
-    private TableColumn<Place, String> ratingColumn = null;
+    private VBox parent;
+    private HBox placeSearchArea;
+    private TableView<Place> table;
+    private TableColumn<Place, String> nameColumn;
+    private TableColumn<Place, String> addressColumn;
+    private TableColumn<Place, String> ratingColumn;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -46,7 +46,7 @@ public class Main extends Application {
     }
 
     private VBox initializeVBox(){
-        VBox parent = new VBox();
+        parent = new VBox();
         parent.setPrefWidth(500);
         parent.getChildren().add(new Label("Enter what you would like to search for"));
         placeSearchArea = initializeHBox();
@@ -54,7 +54,7 @@ public class Main extends Application {
     }
 
     private HBox initializeHBox(){
-        HBox placeSearchArea = new HBox(new Label("Search Entry:"));
+        placeSearchArea = new HBox(new Label("Search Entry:"));
         placeSearchArea.setPadding(new Insets(10));
         final TextField locationTextField = new TextField();
         placeSearchArea.getChildren().add(locationTextField);
@@ -89,7 +89,7 @@ public class Main extends Application {
     }
 
     private void setSearchButtonFunctionality(Button searchButton){
-        final TextField locationTextField = (TextField) placeSearchArea.getChildren().get(0);
+        final TextField locationTextField = (TextField) placeSearchArea.getChildren().get(1);
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 String location = locationTextField.getText();
