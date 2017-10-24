@@ -19,7 +19,7 @@ public class PlaceParserTest {
     public void testParse_firstRating() throws IOException{
         PlaceParser parser = new PlaceParser();
         List<Place> places = parser.parse("Muncie,IN");
-        Assert.assertEquals("4.6", places.get(0).getRating());
+        Assert.assertEquals("4.7", places.get(0).getRating());
     }
 
     @Test
