@@ -57,7 +57,9 @@ public class Main extends Application {
         placeSearchArea = new HBox(new Label("Search Entry:"));
         placeSearchArea.setPadding(new Insets(10));
         final TextField locationTextField = new TextField();
-        placeSearchArea.getChildren().add(locationTextField);
+        final Label radiusTextFieldLabel = new Label("Radius:");
+        final TextField radiusTextField = new TextField();
+        placeSearchArea.getChildren().addAll(locationTextField, radiusTextFieldLabel, radiusTextField);
         parent.getChildren().add(placeSearchArea);
         return placeSearchArea;
     }
@@ -90,13 +92,17 @@ public class Main extends Application {
 
     private void setSearchButtonFunctionality(Button searchButton){
         final TextField locationTextField = (TextField) placeSearchArea.getChildren().get(1);
+        final TextField radiusTextField = (TextField) placeSearchArea.getChildren().get(3);
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-                String location = locationTextField.getText();
+                LinkedList<String> applicationInput = new LinkedList<String>();
+                applicationInput.add(locationTextField.getText());
+                applicationInput.add(radiusTextField.getText());
                 PlaceParser parser = new PlaceParser();
                 List<Place> places = new LinkedList<Place>();
                 try {
-                    places = parser.parse(location);
+                    parser.constructURL(applicationInput);
+                    places = parser.parse();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

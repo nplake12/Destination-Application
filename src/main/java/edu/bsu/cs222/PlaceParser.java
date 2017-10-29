@@ -15,9 +15,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PlaceParser {
+    private String placesAPICallURL;
 
-    public List<Place> parse(String location) throws IOException {
-        URL placesUrl = constructPlacesAPICall(location);
+    public List<Place> parse() throws IOException {
+        URL placesUrl = new URL(placesAPICallURL);
         InputStream placesInputStream = performPlacesAPICall(placesUrl);
         JsonParser parser = new JsonParser();
         Reader placesReader = new InputStreamReader(placesInputStream);
@@ -27,11 +28,13 @@ public class PlaceParser {
         return addPlacesToList(placesResults);
     }
 
-    private URL constructPlacesAPICall(String location) throws IOException{
-        GeocodeParser locationParser = new GeocodeParser();
-        String coordinates = locationParser.parse(location);
-        String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + coordinates + "&radius=500&type=restaurant&key=AIzaSyAlmnrNiNrVybKz8JbYjOzuxZrGVRI9-Gg";
-        return new URL(googlePlacesSearch);
+    public void constructURL(LinkedList<String> userInput) throws IOException{
+        PlacesURL url = new PlacesURL.Builder()
+                .setCoordinates(userInput.get(0))
+                .setRadius(userInput.get(1))
+                .setPlacesURLCall()
+                .build();
+        placesAPICallURL = url.getPlacesURLCall();
     }
 
     private InputStream performPlacesAPICall(URL placesUrl) throws IOException{
