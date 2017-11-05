@@ -31,12 +31,14 @@ public class PlacesURL {
     }
 
     private String placesURLCall;
+    private String coordinates;
 
     public PlacesURL(Builder builder){
         this.placesURLCall = builder.placesURLCall;
+        this.coordinates = builder.coordinates;
     }
 
     public String getPlacesURLCall() { return this.placesURLCall; }
 
-
+    public String getCoordinates() { return this.coordinates; }
 }

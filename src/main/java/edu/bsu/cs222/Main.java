@@ -26,6 +26,7 @@ public class Main extends Application {
     private TableView<Place> table;
     private TableColumn<Place, String> nameColumn;
     private TableColumn<Place, String> addressColumn;
+    private TableColumn<Place, String> distanceColumn;
     private TableColumn<Place, String> ratingColumn;
 
     @Override
@@ -47,7 +48,7 @@ public class Main extends Application {
 
     private VBox initializeVBox(){
         parent = new VBox();
-        parent.setPrefWidth(500);
+        parent.setPrefWidth(600);
         parent.getChildren().add(new Label("Enter what you would like to search for"));
         placeSearchArea = initializeHBox();
         return parent;
@@ -70,12 +71,15 @@ public class Main extends Application {
         nameColumn.setPrefWidth(200);
         addressColumn = new TableColumn<Place, String>("Address");
         addressColumn.setPrefWidth(250);
+        distanceColumn = new TableColumn<Place, String>("Distance");
+        distanceColumn.setPrefWidth(100);
         ratingColumn = new TableColumn<Place, String>("Rating");
         ratingColumn.setPrefWidth(50);
 
         table.setEditable(true);
         table.getColumns().add(nameColumn);
         table.getColumns().add(addressColumn);
+        table.getColumns().add(distanceColumn);
         table.getColumns().add(ratingColumn);
 
         return table;
@@ -112,6 +116,9 @@ public class Main extends Application {
                 );
                 addressColumn.setCellValueFactory(
                         new PropertyValueFactory<Place, String>("address")
+                );
+                distanceColumn.setCellValueFactory(
+                        new PropertyValueFactory<Place, String>("distance")
                 );
                 ratingColumn.setCellValueFactory(
                         new PropertyValueFactory<Place, String>("rating")

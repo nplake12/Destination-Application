@@ -6,6 +6,7 @@ public class Place {
         private String name;
         private String rating;
         private String address;
+        private String distance;
 
         public Builder setName(String name){
             this.name = name;
@@ -22,6 +23,11 @@ public class Place {
             return this;
         }
 
+        public Builder setDistance(String distance){
+            this.distance = distance;
+            return this;
+        }
+
         public Place build(){
             return new Place(this);
         }
@@ -30,11 +36,13 @@ public class Place {
     private String name;
     private String rating;
     private String address;
+    private String distance;
 
     public Place(Builder builder){
         this.name = builder.name;
         this.rating = builder.rating;
         this.address = builder.address;
+        this.distance = builder.distance;
     }
 
     public String getName(){
@@ -48,4 +56,6 @@ public class Place {
     public String getAddress(){
         return this.address;
     }
+
+    public String getDistance() { return this.distance; }
 }

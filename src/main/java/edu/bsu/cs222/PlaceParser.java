@@ -16,6 +16,7 @@ import java.util.List;
 
 public class PlaceParser {
     private String placesAPICallURL;
+    private PlacesURL url;
 
     public List<Place> parse() throws IOException {
         URL placesUrl = new URL(placesAPICallURL);
@@ -29,7 +30,7 @@ public class PlaceParser {
     }
 
     public void constructURL(LinkedList<String> userInput) throws IOException{
-        PlacesURL url = new PlacesURL.Builder()
+        url = new PlacesURL.Builder()
                 .setCoordinates(userInput.get(0))
                 .setRadius(userInput.get(1))
                 .setPlacesURLCall()
@@ -42,16 +43,26 @@ public class PlaceParser {
         return placesConnection.getInputStream();
     }
 
-    private List<Place> addPlacesToList(JsonArray placesResults){
+    private List<Place> addPlacesToList(JsonArray placesResults) throws IOException{
         List<Place> placesList = new LinkedList<Place>();
         for (JsonElement place : placesResults) {
+            JsonObject destinationCoordinates = place.getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject();
             Place googlePlace = new Place.Builder()
                     .setName(place.getAsJsonObject().has("name") ? place.getAsJsonObject().get("name").getAsString() : "N/A")
                     .setRating(place.getAsJsonObject().has("rating") ? place.getAsJsonObject().get("rating").getAsString() : "N/A")
                     .setAddress(place.getAsJsonObject().has("vicinity") ? place.getAsJsonObject().get("vicinity").getAsString() : "N/A")
+                    .setDistance(getDistance(destinationCoordinates.get("lat").getAsString() + "," + destinationCoordinates.get("lng").getAsString()))
                     .build();
             placesList.add(googlePlace);
         }
         return placesList;
+    }
+
+    private String getDistance(String destinationCoordinates) throws IOException{
+        DistanceParser distanceParser = new DistanceParser.Builder()
+                .setOriginCoordinates(url.getCoordinates())
+                .setDestinationCoordinates(destinationCoordinates)
+                .build();
+        return distanceParser.parseDistance();
     }
 }
