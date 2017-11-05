@@ -96,7 +96,7 @@ public class Main extends Application {
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 LinkedList<String> applicationInput = new LinkedList<String>();
-                applicationInput.add(locationTextField.getText());
+                applicationInput.add(locationTextField.getText().replaceAll(" ",""));
                 applicationInput.add(radiusTextField.getText());
                 PlaceParser parser = new PlaceParser();
                 List<Place> places = new LinkedList<Place>();
