@@ -7,6 +7,7 @@ public class PlacesURL {
         private String coordinates;
         private String radius;
         private String placesURLCall;
+        private String placeType;
 
         public Builder setCoordinates(String location) throws IOException{
             GeocodeParser locationParser = new GeocodeParser();
@@ -19,9 +20,15 @@ public class PlacesURL {
             return this;
         }
 
+        public Builder setPlaceType(String placeType){
+            TypeMap typeMap = new TypeMap();
+            this.placeType = typeMap.getTypeParameter(placeType);
+            return this;
+        }
+
         public Builder setPlacesURLCall(){
             this.placesURLCall = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + coordinates +
-                                 "&radius=" + radius + "&type=restaurant&key=AIzaSyAlmnrNiNrVybKz8JbYjOzuxZrGVRI9-Gg";
+                                 "&radius=" + radius + "&type=" + placeType +"&key=AIzaSyAlmnrNiNrVybKz8JbYjOzuxZrGVRI9-Gg";
             return this;
         }
 

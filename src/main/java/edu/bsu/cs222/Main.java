@@ -55,12 +55,22 @@ public class Main extends Application {
     }
 
     private HBox initializeHBox(){
-        placeSearchArea = new HBox(new Label("Search Entry:"));
+        placeSearchArea = new HBox();
         placeSearchArea.setPadding(new Insets(10));
+        final Label locationTextFieldLabel = new Label("Search Entry:");
         final TextField locationTextField = new TextField();
         final Label radiusTextFieldLabel = new Label("Radius:");
         final TextField radiusTextField = new TextField();
-        placeSearchArea.getChildren().addAll(locationTextField, radiusTextFieldLabel, radiusTextField);
+        final Label typeChoiceBoxLabel = new Label("Place Type: ");
+        final ChoiceBox<String> typeChoiceBox = new ChoiceBox<String>();
+        typeChoiceBox.getItems().addAll("ATM","Bank","Bar","Bowling Alley","Clothing Store",
+                                        "Doctor","Gas Station","Hospital","Lodging","Park",
+                                        "Parking","Post Office","Restaurant","School",
+                                        "Shopping Mall","University","Zoo");
+        typeChoiceBox.setValue("ATM");
+        placeSearchArea.getChildren().addAll(locationTextFieldLabel,locationTextField,
+                                             radiusTextFieldLabel, radiusTextField,
+                                             typeChoiceBoxLabel, typeChoiceBox);
         parent.getChildren().add(placeSearchArea);
         return placeSearchArea;
     }
@@ -97,11 +107,13 @@ public class Main extends Application {
     private void setSearchButtonFunctionality(Button searchButton){
         final TextField locationTextField = (TextField) placeSearchArea.getChildren().get(1);
         final TextField radiusTextField = (TextField) placeSearchArea.getChildren().get(3);
+        final ChoiceBox typeChoiceBox = (ChoiceBox) placeSearchArea.getChildren().get(5);
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 LinkedList<String> applicationInput = new LinkedList<String>();
                 applicationInput.add(locationTextField.getText().replaceAll(" ",""));
                 applicationInput.add(radiusTextField.getText());
+                applicationInput.add(typeChoiceBox.getValue().toString());
                 PlaceParser parser = new PlaceParser();
                 List<Place> places = new LinkedList<Place>();
                 try {

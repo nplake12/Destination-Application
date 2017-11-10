@@ -33,6 +33,7 @@ public class PlaceParser {
         url = new PlacesURL.Builder()
                 .setCoordinates(userInput.get(0))
                 .setRadius(userInput.get(1))
+                .setPlaceType(userInput.get(2))
                 .setPlacesURLCall()
                 .build();
         placesAPICallURL = url.getPlacesURLCall();
