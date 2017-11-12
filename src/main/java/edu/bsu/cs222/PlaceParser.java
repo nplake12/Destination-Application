@@ -6,11 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,10 +16,9 @@ public class PlaceParser {
     private PlacesURL url;
 
     public List<Place> parse() throws IOException {
-        URL placesUrl = new URL(placesAPICallURL);
-        InputStream placesInputStream = performPlacesAPICall(placesUrl);
+        APICaller placesAPICaller = new APICaller();
+        Reader placesReader = placesAPICaller.makeAPICall(new URL(placesAPICallURL));
         JsonParser parser = new JsonParser();
-        Reader placesReader = new InputStreamReader(placesInputStream);
         JsonElement placesRootElement = parser.parse(placesReader);
         JsonObject placesRootObject = placesRootElement.getAsJsonObject();
         JsonArray placesResults = placesRootObject.get("results").getAsJsonArray();
@@ -37,11 +33,6 @@ public class PlaceParser {
                 .setPlacesURLCall()
                 .build();
         placesAPICallURL = url.getPlacesURLCall();
-    }
-
-    private InputStream performPlacesAPICall(URL placesUrl) throws IOException{
-        URLConnection placesConnection = placesUrl.openConnection();
-        return placesConnection.getInputStream();
     }
 
     private List<Place> addPlacesToList(JsonArray placesResults) throws IOException{

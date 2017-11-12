@@ -56,6 +56,4 @@ public class Place {
     public String getAddress(){
         return this.address;
     }
-
-    public String getDistance() { return this.distance; }
 }

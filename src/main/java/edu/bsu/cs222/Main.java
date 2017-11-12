@@ -48,7 +48,7 @@ public class Main extends Application {
 
     private VBox initializeVBox(){
         parent = new VBox();
-        parent.setPrefWidth(600);
+        parent.setPrefWidth(750);
         parent.getChildren().add(new Label("Enter what you would like to search for"));
         placeSearchArea = initializeHBox();
         return parent;
@@ -57,11 +57,11 @@ public class Main extends Application {
     private HBox initializeHBox(){
         placeSearchArea = new HBox();
         placeSearchArea.setPadding(new Insets(10));
-        final Label locationTextFieldLabel = new Label("Search Entry:");
+        final Label locationTextFieldLabel = new Label("Search Entry: ");
         final TextField locationTextField = new TextField();
-        final Label radiusTextFieldLabel = new Label("Radius:");
+        final Label radiusTextFieldLabel = new Label(" Radius in Miles: ");
         final TextField radiusTextField = new TextField();
-        final Label typeChoiceBoxLabel = new Label("Place Type: ");
+        final Label typeChoiceBoxLabel = new Label(" Place Type: ");
         final ChoiceBox<String> typeChoiceBox = new ChoiceBox<String>();
         typeChoiceBox.getItems().addAll("ATM","Bank","Bar","Bowling Alley","Clothing Store",
                                         "Doctor","Gas Station","Hospital","Lodging","Park",
@@ -78,13 +78,13 @@ public class Main extends Application {
     private TableView<Place> initializeTable(){
         final TableView<Place> table = new TableView<Place>();
         nameColumn = new TableColumn<Place, String>("Name");
-        nameColumn.setPrefWidth(200);
+        nameColumn.setPrefWidth(250);
         addressColumn = new TableColumn<Place, String>("Address");
-        addressColumn.setPrefWidth(250);
+        addressColumn.setPrefWidth(275);
         distanceColumn = new TableColumn<Place, String>("Distance");
         distanceColumn.setPrefWidth(100);
         ratingColumn = new TableColumn<Place, String>("Rating");
-        ratingColumn.setPrefWidth(50);
+        ratingColumn.setPrefWidth(125);
 
         table.setEditable(true);
         table.getColumns().add(nameColumn);
@@ -112,7 +112,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 LinkedList<String> applicationInput = new LinkedList<String>();
                 applicationInput.add(locationTextField.getText().replaceAll(" ",""));
-                applicationInput.add(radiusTextField.getText());
+                applicationInput.add(Double.toString(Double.parseDouble(radiusTextField.getText()) * 1609.34));
                 applicationInput.add(typeChoiceBox.getValue().toString());
                 PlaceParser parser = new PlaceParser();
                 List<Place> places = new LinkedList<Place>();

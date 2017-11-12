@@ -6,12 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class DistanceParser {
     public static final class Builder {
@@ -42,25 +39,19 @@ public class DistanceParser {
     }
 
     public String parseDistance() throws IOException{
-        URL distanceMatrixUrl = constructDistanceMatrixAPICall();
-        InputStream distanceMatrixInputStream = performDistanceMatrixAPICall(distanceMatrixUrl);
+        APICaller distanceMatrixAPICaller = new APICaller();
+        Reader distanceMatrixReader = distanceMatrixAPICaller.makeAPICall(constructDistanceMatrixAPIURL());
         JsonParser parser = new JsonParser();
-        Reader reader = new InputStreamReader(distanceMatrixInputStream);
-        JsonElement rootElement = parser.parse(reader);
+        JsonElement rootElement = parser.parse(distanceMatrixReader);
         JsonObject rootObject = rootElement.getAsJsonObject();
         JsonArray distanceArray = rootObject.get("rows").getAsJsonArray();
         return parseDistanceArray(distanceArray);
     }
 
-    private URL constructDistanceMatrixAPICall() throws MalformedURLException{
+    private URL constructDistanceMatrixAPIURL() throws MalformedURLException{
         return new URL("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" +
                 originCoordinates + "&destinations=" + destinationCoordinates +
                 "&key=AIzaSyCV5eOWU9AKoF3n76KCUKSMYrMGPl31fhE");
-    }
-
-    private InputStream performDistanceMatrixAPICall(URL distanceMatrixUrl) throws IOException{
-        URLConnection connection = distanceMatrixUrl.openConnection();
-        return connection.getInputStream();
     }
 
     private String parseDistanceArray(JsonArray distanceArray){
