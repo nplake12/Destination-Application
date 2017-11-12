@@ -43,14 +43,14 @@ public class PlaceParser {
                     .setName(place.getAsJsonObject().has("name") ? place.getAsJsonObject().get("name").getAsString() : "N/A")
                     .setRating(place.getAsJsonObject().has("rating") ? place.getAsJsonObject().get("rating").getAsString() : "N/A")
                     .setAddress(place.getAsJsonObject().has("vicinity") ? place.getAsJsonObject().get("vicinity").getAsString() : "N/A")
-                    .setDistance(getDistance(destinationCoordinates.get("lat").getAsString() + "," + destinationCoordinates.get("lng").getAsString()))
+                    .setDistance(getPlaceDistance(destinationCoordinates.get("lat").getAsString() + "," + destinationCoordinates.get("lng").getAsString()))
                     .build();
             placesList.add(googlePlace);
         }
         return placesList;
     }
 
-    private String getDistance(String destinationCoordinates) throws IOException{
+    private String getPlaceDistance(String destinationCoordinates) throws IOException{
         DistanceParser distanceParser = new DistanceParser.Builder()
                 .setOriginCoordinates(url.getCoordinates())
                 .setDestinationCoordinates(destinationCoordinates)

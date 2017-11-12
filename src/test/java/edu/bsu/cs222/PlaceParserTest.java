@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PlaceParserTest {
 
-    private LinkedList<String> placesURLParameters = new LinkedList<String>(Arrays.asList("Muncie,IN", "500"));
+    private LinkedList<String> placesURLParameters = new LinkedList<String>(Arrays.asList("Muncie,IN", "500", "Restaurant"));
 
 
     @Test
@@ -35,5 +35,13 @@ public class PlaceParserTest {
         parser.constructURL(placesURLParameters);
         List<Place> places = parser.parse();
         Assert.assertEquals("308 North Walnut Street, Muncie", places.get(0).getAddress());
+    }
+
+    @Test
+    public void testParse_firstDistance() throws IOException{
+        PlaceParser parser = new PlaceParser();
+        parser.constructURL(placesURLParameters);
+        List<Place> places = parser.parse();
+        Assert.assertEquals("0.2 mi", places.get(0).getDistance());
     }
 }

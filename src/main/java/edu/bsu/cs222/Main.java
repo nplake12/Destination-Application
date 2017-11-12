@@ -47,6 +47,7 @@ public class Main extends Application {
     }
 
     private VBox initializeVBox(){
+
         parent = new VBox();
         parent.setPrefWidth(750);
         parent.getChildren().add(new Label("Enter what you would like to search for"));
@@ -55,12 +56,16 @@ public class Main extends Application {
     }
 
     private HBox initializeHBox(){
+
         placeSearchArea = new HBox();
         placeSearchArea.setPadding(new Insets(10));
+
         final Label locationTextFieldLabel = new Label("Search Entry: ");
         final TextField locationTextField = new TextField();
+
         final Label radiusTextFieldLabel = new Label(" Radius in Miles: ");
         final TextField radiusTextField = new TextField();
+
         final Label typeChoiceBoxLabel = new Label(" Place Type: ");
         final ChoiceBox<String> typeChoiceBox = new ChoiceBox<String>();
         typeChoiceBox.getItems().addAll("ATM","Bank","Bar","Bowling Alley","Clothing Store",
@@ -68,6 +73,7 @@ public class Main extends Application {
                                         "Parking","Post Office","Restaurant","School",
                                         "Shopping Mall","University","Zoo");
         typeChoiceBox.setValue("ATM");
+
         placeSearchArea.getChildren().addAll(locationTextFieldLabel,locationTextField,
                                              radiusTextFieldLabel, radiusTextField,
                                              typeChoiceBoxLabel, typeChoiceBox);
@@ -76,13 +82,18 @@ public class Main extends Application {
     }
 
     private TableView<Place> initializeTable(){
+
         final TableView<Place> table = new TableView<Place>();
+
         nameColumn = new TableColumn<Place, String>("Name");
         nameColumn.setPrefWidth(250);
+
         addressColumn = new TableColumn<Place, String>("Address");
         addressColumn.setPrefWidth(275);
+
         distanceColumn = new TableColumn<Place, String>("Distance");
         distanceColumn.setPrefWidth(100);
+
         ratingColumn = new TableColumn<Place, String>("Rating");
         ratingColumn.setPrefWidth(125);
 
@@ -96,6 +107,7 @@ public class Main extends Application {
     }
 
     private GridPane initializeButton(){
+
         GridPane buttonGrid = new GridPane();
         Button button = new Button("Search");
         buttonGrid.add(button, 0, 2);
@@ -105,11 +117,15 @@ public class Main extends Application {
     }
 
     private void setSearchButtonFunctionality(Button searchButton){
+
         final TextField locationTextField = (TextField) placeSearchArea.getChildren().get(1);
         final TextField radiusTextField = (TextField) placeSearchArea.getChildren().get(3);
         final ChoiceBox typeChoiceBox = (ChoiceBox) placeSearchArea.getChildren().get(5);
+
         searchButton.setOnAction(new EventHandler<ActionEvent>() {
+
             public void handle(ActionEvent event) {
+
                 LinkedList<String> applicationInput = new LinkedList<String>();
                 applicationInput.add(locationTextField.getText().replaceAll(" ",""));
                 applicationInput.add(Double.toString(Double.parseDouble(radiusTextField.getText()) * 1609.34));
@@ -117,9 +133,11 @@ public class Main extends Application {
                 PlaceParser parser = new PlaceParser();
                 List<Place> places = new LinkedList<Place>();
                 try {
+
                     parser.constructURL(applicationInput);
                     places = parser.parse();
                 } catch (IOException e) {
+
                     e.printStackTrace();
                 }
                 ObservableList<Place> list = FXCollections.observableList(places);

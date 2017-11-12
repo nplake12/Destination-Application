@@ -53,7 +53,7 @@ public class Place {
         return this.rating;
     }
 
-    public String getAddress(){
-        return this.address;
-    }
+    public String getAddress(){ return this.address; }
+
+    public String getDistance() { return this.distance; }
 }

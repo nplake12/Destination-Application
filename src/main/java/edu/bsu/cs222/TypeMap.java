@@ -9,7 +9,7 @@ public class TypeMap {
         return placeTypes.get(placeType);
     }
 
-    public HashMap<String, String> initializeTypeParameterHashMap(){
+    private HashMap<String, String> initializeTypeParameterHashMap(){
         HashMap<String, String> placeTypes = new HashMap<String, String>();
         placeTypes.put("ATM","atm");
         placeTypes.put("Bank","bank");
