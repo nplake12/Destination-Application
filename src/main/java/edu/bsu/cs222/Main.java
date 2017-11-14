@@ -49,7 +49,7 @@ public class Main extends Application {
     private VBox initializeVBox(){
 
         parent = new VBox();
-        parent.setPrefWidth(750);
+        parent.setPrefWidth(755);
         parent.getChildren().add(new Label("Enter what you would like to search for"));
         placeSearchArea = initializeHBox();
         return parent;
@@ -89,7 +89,7 @@ public class Main extends Application {
         nameColumn.setPrefWidth(250);
 
         addressColumn = new TableColumn<Place, String>("Address");
-        addressColumn.setPrefWidth(275);
+        addressColumn.setPrefWidth(280);
 
         distanceColumn = new TableColumn<Place, String>("Distance");
         distanceColumn.setPrefWidth(100);
