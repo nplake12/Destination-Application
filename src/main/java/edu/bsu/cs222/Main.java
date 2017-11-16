@@ -19,40 +19,81 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Main extends Application {
+import com.lynden.gmapsfx.GoogleMapView;
+import com.lynden.gmapsfx.MapComponentInitializedListener;
+import com.lynden.gmapsfx.javascript.object.GoogleMap;
+import com.lynden.gmapsfx.javascript.object.LatLong;
+import com.lynden.gmapsfx.javascript.object.MapOptions;
+import com.lynden.gmapsfx.javascript.object.Marker;
+import com.lynden.gmapsfx.javascript.object.MarkerOptions;
 
-    private VBox parent;
+public class Main extends Application implements MapComponentInitializedListener{
+
+    private VBox leftSearchArea;
     private HBox placeSearchArea;
+    HBox parent;
+
     private TableView<Place> table;
     private TableColumn<Place, String> nameColumn;
     private TableColumn<Place, String> addressColumn;
     private TableColumn<Place, String> distanceColumn;
     private TableColumn<Place, String> ratingColumn;
 
+    GoogleMapView mapView;
+    GoogleMap map;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Destination Application");
 
-        parent = initializeVBox();
+        mapView = new GoogleMapView();
+        mapView.addMapInializedListener(this);
+        leftSearchArea = initializeVBox();
+
+        parent = new HBox();
+        parent.getChildren().addAll(leftSearchArea, mapView);
 
         table = initializeTable();
-
         GridPane buttonGrid = initializeButton();
         Button button = (Button) buttonGrid.getChildren().get(0);
         setSearchButtonFunctionality(button);
 
-        parent.getChildren().addAll(buttonGrid, table);
+        leftSearchArea.getChildren().addAll(buttonGrid, table);
         Scene homePage = new Scene(parent);
         primaryStage.setScene(homePage);
         primaryStage.show();
     }
 
+    public void mapInitialized() {
+        MapOptions mapOptions = new MapOptions();
+
+        mapOptions.center(new LatLong(40.1933767,-85.3863599))
+                .overviewMapControl(false)
+                .panControl(false)
+                .rotateControl(false)
+                .scaleControl(false)
+                .streetViewControl(false)
+                .zoomControl(false)
+                .zoom(12);
+
+        map = mapView.createMap(mapOptions);
+        MarkerOptions markerOptions = new MarkerOptions();
+
+        markerOptions.position( new LatLong(40.1933767,-85.3863599) )
+                .visible(Boolean.TRUE)
+                .title("My Marker");
+
+        Marker marker = new Marker( markerOptions );
+        map.addMarker(marker);
+    }
+
     private VBox initializeVBox(){
 
-        parent = new VBox();
-        parent.setPrefWidth(755);
-        parent.getChildren().add(new Label("Enter what you would like to search for"));
+        leftSearchArea = new VBox();
+        leftSearchArea.setPrefWidth(755);
+        leftSearchArea.getChildren().add(new Label("Enter what you would like to search for"));
         placeSearchArea = initializeHBox();
-        return parent;
+        return leftSearchArea;
     }
 
     private HBox initializeHBox(){
@@ -77,13 +118,14 @@ public class Main extends Application {
         placeSearchArea.getChildren().addAll(locationTextFieldLabel,locationTextField,
                                              radiusTextFieldLabel, radiusTextField,
                                              typeChoiceBoxLabel, typeChoiceBox);
-        parent.getChildren().add(placeSearchArea);
+        leftSearchArea.getChildren().add(placeSearchArea);
         return placeSearchArea;
     }
 
     private TableView<Place> initializeTable(){
 
         final TableView<Place> table = new TableView<Place>();
+        table.setPrefHeight(503);
 
         nameColumn = new TableColumn<Place, String>("Name");
         nameColumn.setPrefWidth(250);
@@ -102,7 +144,6 @@ public class Main extends Application {
         table.getColumns().add(addressColumn);
         table.getColumns().add(distanceColumn);
         table.getColumns().add(ratingColumn);
-
         return table;
     }
 
@@ -156,5 +197,9 @@ public class Main extends Application {
                 table.setItems(list);
             }
         });
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
