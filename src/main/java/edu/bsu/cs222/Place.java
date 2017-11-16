@@ -33,10 +33,10 @@ public class Place {
         }
     }
 
-    private String name;
-    private String rating;
-    private String address;
-    private String distance;
+    final private String name;
+    final private String rating;
+    final private String address;
+    final private String distance;
 
     public Place(Builder builder){
         this.name = builder.name;

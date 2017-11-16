@@ -40,9 +40,9 @@ public class PlaceParser {
         for (JsonElement place : placesResults) {
             JsonObject destinationCoordinates = place.getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject();
             Place googlePlace = new Place.Builder()
-                    .setName(place.getAsJsonObject().has("name") ? place.getAsJsonObject().get("name").getAsString() : "N/A")
-                    .setRating(place.getAsJsonObject().has("rating") ? place.getAsJsonObject().get("rating").getAsString() : "N/A")
-                    .setAddress(place.getAsJsonObject().has("vicinity") ? place.getAsJsonObject().get("vicinity").getAsString() : "N/A")
+                    .setName(place.getAsJsonObject().has("name") ? place.getAsJsonObject().get("name").getAsString() : "")
+                    .setRating(place.getAsJsonObject().has("rating") ? place.getAsJsonObject().get("rating").getAsString() : "")
+                    .setAddress(place.getAsJsonObject().has("vicinity") ? place.getAsJsonObject().get("vicinity").getAsString() : "")
                     .setDistance(getPlaceDistance(destinationCoordinates.get("lat").getAsString() + "," + destinationCoordinates.get("lng").getAsString()))
                     .build();
             placesList.add(googlePlace);
