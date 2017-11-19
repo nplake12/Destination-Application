@@ -44,6 +44,8 @@ public class PlaceParser {
                     .setRating(place.getAsJsonObject().has("rating") ? place.getAsJsonObject().get("rating").getAsString() : "")
                     .setAddress(place.getAsJsonObject().has("vicinity") ? place.getAsJsonObject().get("vicinity").getAsString() : "")
                     .setDistance(getPlaceDistance(destinationCoordinates.get("lat").getAsString() + "," + destinationCoordinates.get("lng").getAsString()))
+                    .setLongitude(destinationCoordinates.get("lng").getAsString())
+                    .setLatitude(destinationCoordinates.get("lat").getAsString())
                     .build();
             placesList.add(googlePlace);
         }

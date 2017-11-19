@@ -22,10 +22,7 @@ import java.util.List;
 import com.lynden.gmapsfx.GoogleMapView;
 import com.lynden.gmapsfx.MapComponentInitializedListener;
 import com.lynden.gmapsfx.javascript.object.GoogleMap;
-import com.lynden.gmapsfx.javascript.object.LatLong;
 import com.lynden.gmapsfx.javascript.object.MapOptions;
-import com.lynden.gmapsfx.javascript.object.Marker;
-import com.lynden.gmapsfx.javascript.object.MarkerOptions;
 
 public class Main extends Application implements MapComponentInitializedListener{
 
@@ -65,26 +62,6 @@ public class Main extends Application implements MapComponentInitializedListener
     }
 
     public void mapInitialized() {
-        MapOptions mapOptions = new MapOptions();
-
-        mapOptions.center(new LatLong(40.1933767,-85.3863599))
-                .overviewMapControl(false)
-                .panControl(false)
-                .rotateControl(false)
-                .scaleControl(false)
-                .streetViewControl(false)
-                .zoomControl(false)
-                .zoom(12);
-
-        map = mapView.createMap(mapOptions);
-        MarkerOptions markerOptions = new MarkerOptions();
-
-        markerOptions.position( new LatLong(40.1933767,-85.3863599) )
-                .visible(Boolean.TRUE)
-                .title("My Marker");
-
-        Marker marker = new Marker( markerOptions );
-        map.addMarker(marker);
     }
 
     private VBox initializeVBox(){
@@ -182,6 +159,7 @@ public class Main extends Application implements MapComponentInitializedListener
                     e.printStackTrace();
                 }
                 ObservableList<Place> list = FXCollections.observableList(places);
+
                 nameColumn.setCellValueFactory(
                         new PropertyValueFactory<Place, String>("name")
                 );
@@ -195,8 +173,28 @@ public class Main extends Application implements MapComponentInitializedListener
                         new PropertyValueFactory<Place, String>("rating")
                 );
                 table.setItems(list);
+                setMapMarkers(list);
             }
         });
+    }
+
+    public void setMapMarkers(ObservableList<Place> list){
+        MapOptions mapOptions;
+        MapInitializer mapInitializer = new MapInitializer();
+
+        mapOptions = mapInitializer.initializeGoogleMap(40.1933767,-85.3863599);
+
+        map = mapView.createMap(mapOptions);
+
+        for(Place place : list){
+            System.out.println(Double.parseDouble(place.getLatitude()));
+            System.out.println(Double.parseDouble(place.getLongitude()));
+            map.addMarker(mapInitializer.addMarker(Double.parseDouble(place.getLatitude()), Double.parseDouble(place.getLongitude())));
+        }
+
+
+
+
     }
 
     public static void main(String[] args) {
