@@ -68,7 +68,4 @@ public class MapInitializer{
         latitude = Double.parseDouble(originCoordinateList.get(0));
         longitude = Double.parseDouble(originCoordinateList.get(1));
     }
-
-
-
 }

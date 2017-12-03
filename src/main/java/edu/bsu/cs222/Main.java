@@ -1,6 +1,5 @@
 package edu.bsu.cs222;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -148,6 +147,10 @@ public class Main extends Application implements MapComponentInitializedListener
             public void handle(ActionEvent event) {
 
                 LinkedList<String> applicationInput = new LinkedList<String>();
+                if(locationTextField.getText().length() == 0 || radiusTextField.getText().length() == 0){
+                    alert("It seems that one or more of the required fields are empty! Please fill them out and try again.");
+                    return;
+                }
                 originLocation = locationTextField.getText().replaceAll(" ","");
                 applicationInput.add(originLocation);
                 applicationInput.add(Double.toString(Double.parseDouble(radiusTextField.getText()) * 1609.34));
@@ -158,6 +161,9 @@ public class Main extends Application implements MapComponentInitializedListener
 
                     parser.constructURL(applicationInput);
                     places = parser.parse();
+                    if(places.size() == 0){
+                        alert("The radius for this specific place and place type seems to be too small!");
+                    }
                 } catch (IOException e) {
 
                     e.printStackTrace();
@@ -197,6 +203,13 @@ public class Main extends Application implements MapComponentInitializedListener
 
         MapOptions mapOptions = mapInitializer.initializeGoogleMap(originCoordinates, placeObservableList);
         map = mapInitializer.addPlacesToGoogleMap(mapView.createMap(mapOptions));
+    }
+
+    private void alert(String errorText){
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Error");
+            errorAlert.setContentText(errorText);
+            errorAlert.showAndWait();
     }
 
     public static void main(String[] args) {

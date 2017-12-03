@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -19,6 +20,9 @@ public class GeocodeParser{
         JsonElement rootElement = parser.parse(geocodingReader);
         JsonObject rootObject = rootElement.getAsJsonObject();
         JsonArray locationResults = rootObject.get("results").getAsJsonArray();
+        if(locationResults.size() == 0){
+            originCoordinatesAlert();
+        }
         return parseLocationCoordinates(locationResults);
     }
 
@@ -36,5 +40,12 @@ public class GeocodeParser{
                 .getAsJsonObject();
         JsonObject locationCoordinates = geometry.get("location").getAsJsonObject();
         return locationCoordinates.get("lat") + "," + locationCoordinates.get("lng");
+    }
+
+    private void originCoordinatesAlert(){
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error");
+        errorAlert.setContentText("It seems that the place you have entered either does not exist or is misspelled!");
+        errorAlert.showAndWait();
     }
 }
