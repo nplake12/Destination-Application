@@ -1,5 +1,6 @@
 package edu.bsu.cs222;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,7 @@ public class Main extends Application implements MapComponentInitializedListener
 
     private VBox leftSearchArea;
     private HBox placeSearchArea;
-    HBox parent;
+    private HBox parent;
 
     private TableView<Place> table;
     private TableColumn<Place, String> nameColumn;
@@ -36,8 +37,10 @@ public class Main extends Application implements MapComponentInitializedListener
     private TableColumn<Place, String> distanceColumn;
     private TableColumn<Place, String> ratingColumn;
 
-    GoogleMapView mapView;
-    GoogleMap map;
+    private GoogleMapView mapView;
+    private GoogleMap map;
+
+    private String originLocation;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -87,14 +90,14 @@ public class Main extends Application implements MapComponentInitializedListener
         final Label typeChoiceBoxLabel = new Label(" Place Type: ");
         final ChoiceBox<String> typeChoiceBox = new ChoiceBox<String>();
         typeChoiceBox.getItems().addAll("ATM","Bank","Bar","Bowling Alley","Clothing Store",
-                                        "Doctor","Gas Station","Hospital","Lodging","Park",
-                                        "Parking","Post Office","Restaurant","School",
-                                        "Shopping Mall","University","Zoo");
+                "Doctor","Gas Station","Hospital","Lodging","Park",
+                "Parking","Post Office","Restaurant","School",
+                "Shopping Mall","University","Zoo");
         typeChoiceBox.setValue("ATM");
 
         placeSearchArea.getChildren().addAll(locationTextFieldLabel,locationTextField,
-                                             radiusTextFieldLabel, radiusTextField,
-                                             typeChoiceBoxLabel, typeChoiceBox);
+                radiusTextFieldLabel, radiusTextField,
+                typeChoiceBoxLabel, typeChoiceBox);
         leftSearchArea.getChildren().add(placeSearchArea);
         return placeSearchArea;
     }
@@ -134,18 +137,19 @@ public class Main extends Application implements MapComponentInitializedListener
         return buttonGrid;
     }
 
-    private void setSearchButtonFunctionality(Button searchButton){
+    private void setSearchButtonFunctionality(Button searchButton) throws IOException{
 
         final TextField locationTextField = (TextField) placeSearchArea.getChildren().get(1);
         final TextField radiusTextField = (TextField) placeSearchArea.getChildren().get(3);
         final ChoiceBox typeChoiceBox = (ChoiceBox) placeSearchArea.getChildren().get(5);
 
-        searchButton.setOnAction(new EventHandler<ActionEvent>() {
+        searchButton.setOnAction(new EventHandler<ActionEvent>(){
 
             public void handle(ActionEvent event) {
 
                 LinkedList<String> applicationInput = new LinkedList<String>();
-                applicationInput.add(locationTextField.getText().replaceAll(" ",""));
+                originLocation = locationTextField.getText().replaceAll(" ","");
+                applicationInput.add(originLocation);
                 applicationInput.add(Double.toString(Double.parseDouble(radiusTextField.getText()) * 1609.34));
                 applicationInput.add(typeChoiceBox.getValue().toString());
                 PlaceParser parser = new PlaceParser();
@@ -158,7 +162,7 @@ public class Main extends Application implements MapComponentInitializedListener
 
                     e.printStackTrace();
                 }
-                ObservableList<Place> list = FXCollections.observableList(places);
+                ObservableList<Place> placeObservableList = FXCollections.observableList(places);
 
                 nameColumn.setCellValueFactory(
                         new PropertyValueFactory<Place, String>("name")
@@ -172,29 +176,27 @@ public class Main extends Application implements MapComponentInitializedListener
                 ratingColumn.setCellValueFactory(
                         new PropertyValueFactory<Place, String>("rating")
                 );
-                table.setItems(list);
-                setMapMarkers(list);
+                table.setItems(placeObservableList);
+                try {
+                    setMapMarkers(placeObservableList);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    public void setMapMarkers(ObservableList<Place> list){
-        MapOptions mapOptions;
-        MapInitializer mapInitializer = new MapInitializer();
+    public void setMapMarkers(ObservableList<Place> placeObservableList) throws IOException{
 
-        mapOptions = mapInitializer.initializeGoogleMap(40.1933767,-85.3863599);
+        GeocodeParser locationParser = new GeocodeParser();
+        String originCoordinates = locationParser.parse(originLocation);
 
-        map = mapView.createMap(mapOptions);
+        MapInitializer mapInitializer = new MapInitializer.Builder()
+                .setPlaceObservableList(placeObservableList)
+                .build();
 
-        for(Place place : list){
-            System.out.println(Double.parseDouble(place.getLatitude()));
-            System.out.println(Double.parseDouble(place.getLongitude()));
-            map.addMarker(mapInitializer.addMarker(Double.parseDouble(place.getLatitude()), Double.parseDouble(place.getLongitude())));
-        }
-
-
-
-
+        MapOptions mapOptions = mapInitializer.initializeGoogleMap(originCoordinates, placeObservableList);
+        map = mapInitializer.addPlacesToGoogleMap(mapView.createMap(mapOptions));
     }
 
     public static void main(String[] args) {
