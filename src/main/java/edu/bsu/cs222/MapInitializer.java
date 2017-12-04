@@ -8,23 +8,12 @@ import java.util.List;
 
 public class MapInitializer{
 
-    public static final class Builder{
-        ObservableList<Place> placeObservableList;
-
-        public Builder setPlaceObservableList(ObservableList<Place> placeObservableList){
-            this.placeObservableList = placeObservableList;
-            return this;
-        }
-
-        public MapInitializer build(){ return new MapInitializer(this); }
-    }
-
     private ObservableList<Place> placeObservableList;
     private double latitude;
     private double longitude;
 
-    public MapInitializer(Builder builder){
-        this.placeObservableList = builder.placeObservableList;
+    public MapInitializer(ObservableList<Place> observableList) {
+        this.placeObservableList = observableList;
     }
 
     public MapOptions initializeGoogleMap(String originCoordinates, ObservableList<Place> placeList){
@@ -45,11 +34,10 @@ public class MapInitializer{
         return mapOptions;
     }
 
-    public GoogleMap addPlacesToGoogleMap(GoogleMap placeGoogleMap){
+    public void addPlacesToGoogleMap(GoogleMap placeGoogleMap){
         for(Place place : placeObservableList){
             placeGoogleMap.addMarker(addPlaceMarker(place));
         }
-        return placeGoogleMap;
     }
 
     public Marker addPlaceMarker(Place place){
